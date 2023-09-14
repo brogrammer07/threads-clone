@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, SortOrder } from "mongoose";
+import mongoose, { FilterQuery, SortOrder } from "mongoose";
 
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
@@ -25,8 +25,7 @@ export async function createCommunity(
     if (!user) {
       throw new Error("User not found"); // Handle the case if the user with the id is not found
     }
-
-    const newCommunity = new Community({
+    const createdCommunity = await Community.create({
       id,
       name,
       username,
@@ -34,8 +33,6 @@ export async function createCommunity(
       bio,
       createdBy: user._id, // Use the mongoose ID of the user
     });
-
-    const createdCommunity = await newCommunity.save();
 
     // Update User model
     user.communities.push(createdCommunity._id);
